@@ -1,0 +1,51 @@
+CREATE DATABASE IF NOT EXISTS VideogameStore;
+USE VideogameStore;
+
+CREATE TABLE VideoGames(
+   id_videogame INT AUTO_INCREMENT PRIMARY KEY,
+   name_videogame VARCHAR(100) NOT NULL,
+   platform_videogame VARCHAR(100) NOT NULL,
+   genre_videogame VARCHAR(50),
+   developer_videogame VARCHAR(100),
+   price DECIMAL(10, 2) NOT NULL,
+   release_date_videogame DATE,
+   stock INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE customers(
+   id_customer INT AUTO_INCREMENT PRIMARY KEY,
+   name_customer VARCHAR(150) NOT NULL,
+   email VARCHAR(100) UNIQUE,
+   phone VARCHAR(20),
+   address VARCHAR(200) NOT NULL,
+   registrationDate_customer DATE DEFAULT(current_date()),
+   membership_customer ENUM('Regular', 'Premium', 'VIP') DEFAULT 'Regular'
+);
+
+CREATE TABLE Employee(
+   id_employee INT AUTO_INCREMENT PRIMARY KEY,
+   name_employee VARCHAR(150) NOT NULL,
+   charge_employee ENUM('Vendedor', 'Supervisor', 'Gerente') NOT NULL
+);
+
+CREATE TABLE Sales(
+   id_sale INT AUTO_INCREMENT PRIMARY KEY,
+   date_sale DATETIME DEFAULT CURRENT_TIMESTAMP,
+   total_sales DECIMAL(10, 2) NOT NULL,
+   paymentMethod_sale ENUM('Efectivo','Tarjeta','Transferencia') NOT NULL,
+   id_customer INT NOT NULL,
+   id_employee INT NOT NULL,
+   FOREIGN KEY (id_customer) REFERENCES customers(id_customer),
+   FOREIGN KEY (id_employee) REFERENCES Employee(id_employee)
+);
+
+CREATE TABLE Sales_Details(
+   id_saleDetail INT AUTO_INCREMENT PRIMARY KEY,
+   quantity INT NOT NULL,
+   unit_price DECIMAL(10, 2) NOT NULL,
+   subtotal_saleDetail DECIMAL(10, 2) NOT NULL,
+   id_sale INT NOT NULL,
+   id_videogame INT NOT NULL,
+   FOREIGN KEY (id_sale) REFERENCES Sales(id_sale),
+   FOREIGN KEY (id_videogame) REFERENCES VideoGames(id_videogame)
+);
