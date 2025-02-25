@@ -1,0 +1,50 @@
+CREATE DATABASE SoftHardDeleteDB;
+USE SoftHardDeleteDB;
+
+-- Crear tabla de usuarios
+CREATE TABLE usuarios (
+    Id_usuarios INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    is_delete BOOLEAN DEFAULT false
+);
+
+-- Crear tabla de órdenes
+CREATE TABLE ordenes (
+    Id_orden INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT NOT NULL,
+    producto VARCHAR(100) NOT NULL,
+    cantidad INT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(Id_usuarios) ON DELETE CASCADE
+);
+
+/* Agregando registros */
+-- Insertar usuarios --
+INSERT INTO usuarios (nombre, email) VALUES
+('Adonay', 'adonay@example.com'),
+('Maria Lopez', 'maria@example.com');
+
+/* Insertar órdenes */
+INSERT INTO ordenes (id_usuario, producto, cantidad) VALUES
+(1, 'Laptop', 1),
+(1, 'Mouse', 2),
+(2, 'Teclado', 1);
+
+-- Ejemplo de Hard DELETE(ELIMINACION FICICA)
+DELETE FROM ordenes WHERE id_orden = 1;
+SELECT * FROM ordenes;
+
+-- Soft delete --
+UPDATE usuarios SET is_delete = TRUE WHERE Id_usuarios = 1;
+SELECT * FROM usuarios;
+
+-- Quienes están activos --
+SELECT * FROM usuarios WHERE is_delete = FALSE;
+
+-- Recuperando datos --
+UPDATE usuarios SET is_delete = FALSE;
+SELECT * FROM usuarios;
+
+
+
